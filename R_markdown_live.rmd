@@ -1,7 +1,7 @@
 ---
 title: "R Markdown Live"
 author: "Aijing Zhang"
-date: "July 17, 2017"
+date: "July 18, 2017"
 output: 
     html_document
       #toc:true
@@ -34,6 +34,7 @@ I want to pull out the rows with "Karl" or "Carl".
 ```{r grab_ckarl_rows}
 karl <- babynames %>%
     filter(name=="Karl" | name=="Carl")
+carl <- babynames %>% filter(grepl("^[KC]arl$", name))
 ```
 
 

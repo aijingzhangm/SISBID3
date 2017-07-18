@@ -1,0 +1,64 @@
+---
+title: "R Markdown Live"
+author: "Aijing Zhang"
+date: "July 17, 2017"
+output: 
+    html_document
+      #toc:true
+      #toc_float:true
+      #code_folding:hide
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = TRUE)
+```
+
+## Load babynames
+I'm first going to load the "babynames" package. 
+
+```{r load_babynames}
+library(babynames)
+library(dplyr)
+library(ggplot2)
+```
+
+These data have `r nrow(babynames)` rows.
+Here's the first rows of baby names: 
+
+```{r head_babynames}
+head(babynames)
+```
+
+## Grab the Karls
+I want to pull out the rows with "Karl" or "Carl".
+```{r grab_ckarl_rows}
+karl <- babynames %>%
+    filter(name=="Karl" | name=="Carl")
+```
+
+
+The Carl/Karl subset has `r nrow(karl)` rows.
+
+Here's an interactive table, using the package DT:
+```{r DT_karl}
+library(DT)
+datatable(karl)
+```
+
+
+## Make some plots
+Here's a plot of those names over time. 
+
+```{r plot_karl, fig.height=8}
+ggplot(karl, aes(x=year, y=prop, color=name, linetype=sex)) +
+    geom_line()
+```
+
+
+Here's an interactive version using the package plotly.
+```{r plotly_karl}
+library(plotly)
+p <- ggplot(karl, aes(x=year, y=prop, color=name, linetype=sex)) + 
+   geom_line()
+   plotly::ggplotly(p)
+```

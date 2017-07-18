@@ -1,0 +1,69 @@
+---
+title: "vitD"
+author: "Aijing Zhang"
+date: "July 17, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE, echo = TRUE)
+```
+
+## Load the data
+First load the data
+
+1. a dataset relating physiologic response to serum level (priemelDataReconstruction.csv).
+2. a dataset summarizing results from several clinical trials relating dietary intake levels in IU to serum levels in nmol/L, mostly transcribed from Table 5-4 in the IOM report (iomReview.csv). Careful with this one; it was assembled for human readability, and has blank lines.
+3. metadata for the dose response dataset (vitD.R).
+
+```{r load_data}
+mydata <- read.csv(file="priemelDataReconstruction.csv", header=TRUE, sep=",")
+mydata2 <- read.csv(file="iomReview.csv", header=TRUE, sep=",")
+library(dplyr)
+library(ggplot2)
+```
+
+Reconstructed data have `r nrow(mydata)` rows.   Review data have `r nrow(mydata2)` rows.
+Here's the first rows of datat: 
+
+```{r head_mydata}
+head(mydata)
+head(mydata2)
+```
+
+## Plot the data
+Plot the physiologic response (OV/BV) as a function of serum level.
+```{r plot_mydata}
+ggplot(mydata, aes(x=SerumLevelInNgPerMl, y=OV.BV)) +
+    geom_line()
+```
+
+
+Describe the trend.
+
+## Fit the data
+Using logistic regression to fit the probability that requirements are met (OV/BV is 2 or less) as a function of serum level. 
+```{r logfit_mydata}
+model <- glm(OV.BV<=2 ~.,family=binomial(link='logit'),data=mydata)
+summary(model)
+```
+
+Restrict the set of patients to exclude those with serum values far from the target level (e.g., 10 nmol/L or less)
+```{r logfit_mydatasub}
+mydatasub <- subset(mydata,SerumLevelInNgPerMl<=10)
+```
+
+
+
+Which estimate would you trust more?
+
+Describe the fit in text. 
+
+State what the coefficient values are inline, rounded to 3 decimal places.
+
+## Decribe the trend
+Invoke the earlier plot chunk to set things up, and then superimpose the regression fit. Use abline to add a horizontal line at your estimate of the serum level at which 97.5% of the people would have their requirements met.
+
+
+
+
